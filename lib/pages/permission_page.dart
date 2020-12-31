@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:googlemaps/pages/loading_page.dart';
-import 'package:googlemaps/pages/map_page.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 
@@ -14,6 +13,8 @@ class PermissionPage extends StatefulWidget {
 }
 
 class _PermissionPageState extends State<PermissionPage> with WidgetsBindingObserver{
+
+  bool popup =false;
 
   @override
   void initState() {
@@ -30,8 +31,8 @@ class _PermissionPageState extends State<PermissionPage> with WidgetsBindingObse
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) async {
     print(state);
-    if(state == AppLifecycleState.resumed)
-      if(await Permission.location.isGranted)
+    if(state == AppLifecycleState.resumed && !popup)
+      if(await Permission.location.isGranted )
         Navigator.pushReplacementNamed(context, LoadingPage.routeName);
   }
 
@@ -50,7 +51,9 @@ class _PermissionPageState extends State<PermissionPage> with WidgetsBindingObse
               elevation: 0,
               splashColor: Colors.transparent,
               onPressed: () async {
-                accessGPS(await Permission.location.request());
+                popup = true;
+                await accessGPS(await Permission.location.request());
+                popup = false;
               }
             )
           ],
@@ -59,10 +62,10 @@ class _PermissionPageState extends State<PermissionPage> with WidgetsBindingObse
     );
   }
 
-  void accessGPS(PermissionStatus permissionStatus) {
+  Future accessGPS(PermissionStatus permissionStatus) async {
     switch (permissionStatus) {
       case PermissionStatus.granted:
-        Navigator.pushReplacementNamed(context, MapPage.routeName);
+        await Navigator.pushReplacementNamed(context, LoadingPage.routeName);
         break;
       case PermissionStatus.undetermined:
       case PermissionStatus.denied:

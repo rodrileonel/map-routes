@@ -1,12 +1,11 @@
 part of 'widgets.dart';
 
 
-class BtnLocation extends StatelessWidget {
+class BtnRoute extends StatelessWidget {
 
   final MapBloc mapBloc;
-  final LocationBloc locationBloc;
 
-  const BtnLocation({this.mapBloc, this.locationBloc});
+  const BtnRoute({this.mapBloc});
 
   @override
   Widget build(BuildContext context) {
@@ -18,10 +17,9 @@ class BtnLocation extends StatelessWidget {
         maxRadius: 30,
         child: IconButton(
           color: Colors.black,
-          icon: Icon(Icons.my_location), 
+          icon: Icon(Icons.linear_scale), 
           onPressed: () { 
-            final destino = this.locationBloc.state.location;
-            this.mapBloc.moveCamera(destino);
+            this.mapBloc.add(OnShowRoute());
           },
         ),
       )

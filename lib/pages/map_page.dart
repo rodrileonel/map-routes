@@ -40,6 +40,12 @@ class _MapPageState extends State<MapPage> {
           BtnLocation(
             mapBloc: mapBloc, 
             locationBloc: locationBloc,
+          ),   
+          BtnFollow(
+            mapBloc: mapBloc,
+          ),
+          BtnRoute(
+            mapBloc: mapBloc,
           )
         ]
       ),
@@ -51,6 +57,8 @@ class _MapPageState extends State<MapPage> {
 
     //cambiar opciones del linter, para ello ver archivo analysis_options.yaml
     final mapBloc = BlocProvider.of<MapBloc>(context);
+
+    mapBloc.add(OnLocationUpdate(state.location));
 
     final cameraPosition = CameraPosition(
       target: state.location,
@@ -64,6 +72,11 @@ class _MapPageState extends State<MapPage> {
       zoomControlsEnabled: false,
       onMapCreated: (GoogleMapController controller) 
         => mapBloc.initMap(controller),
+      polylines: mapBloc.state.polylines.values.toSet(),
+      onCameraMove: (cameraPosition){
+        //el tarj¡get es el punto (latlng) central del mapa
+        mapBloc.add(OnMoveMap(cameraPosition.target));
+      },
     );
   }
 }

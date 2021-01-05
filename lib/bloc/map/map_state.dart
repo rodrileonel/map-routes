@@ -10,7 +10,7 @@ class MapState {
 
   MapState( {
     this.readyMap = false,
-    this.dwawLine = true,
+    this.dwawLine = false,
     this.follow = false,
     this.central,
     Map<String,Polyline> polylines

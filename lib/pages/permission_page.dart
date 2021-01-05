@@ -30,7 +30,6 @@ class _PermissionPageState extends State<PermissionPage> with WidgetsBindingObse
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) async {
-    print(state);
     if(state == AppLifecycleState.resumed && !popup)
       if(await Permission.location.isGranted )
         Navigator.pushReplacementNamed(context, LoadingPage.routeName);

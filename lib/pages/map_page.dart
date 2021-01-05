@@ -31,8 +31,14 @@ class _MapPageState extends State<MapPage> {
     final locationBloc = BlocProvider.of<LocationBloc>(context);
 
     return Scaffold(
-      body: BlocBuilder<LocationBloc, LocationState>(
-        builder: (context, state) => createMap(state)
+      body: Stack(
+        children: [
+          BlocBuilder<LocationBloc, LocationState>(
+            builder: (context, state) => createMap(state)
+          ),
+          InputSearch(),
+          Pin(),
+        ],
       ),
       floatingActionButton: Column(
         mainAxisAlignment: MainAxisAlignment.end,
@@ -77,6 +83,9 @@ class _MapPageState extends State<MapPage> {
         //el tarj¡get es el punto (latlng) central del mapa
         mapBloc.add(OnMoveMap(cameraPosition.target));
       },
+      // onCameraIdle: (){
+      //   mapBloc.add(OnMoveMap(cameraPosition.target));
+      // },
     );
   }
 }

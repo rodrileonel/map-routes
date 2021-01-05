@@ -15,7 +15,7 @@ class BtnLocation extends StatelessWidget {
       margin: EdgeInsets.only(bottom:10),
       child: CircleAvatar(
         backgroundColor: Colors.white,
-        maxRadius: 30,
+        maxRadius: 25,
         child: IconButton(
           color: Colors.black,
           icon: Icon(Icons.my_location), 

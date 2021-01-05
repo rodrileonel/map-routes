@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:googlemaps/bloc/location/location_bloc.dart';
 import 'package:googlemaps/bloc/map/map_bloc.dart';
+import 'package:googlemaps/bloc/search/search_bloc.dart';
 import 'package:googlemaps/pages/loading_page.dart';
 import 'package:googlemaps/pages/map_page.dart';
 import 'package:googlemaps/pages/permission_page.dart';
@@ -15,6 +16,7 @@ class MyApp extends StatelessWidget {
       providers: [
         BlocProvider(create: (_) => LocationBloc(),),
         BlocProvider(create: (_) => MapBloc(),),
+        BlocProvider(create: (_) => SearchBloc(),),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

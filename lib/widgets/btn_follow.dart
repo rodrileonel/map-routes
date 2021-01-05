@@ -16,7 +16,7 @@ class BtnFollow extends StatelessWidget {
           margin: EdgeInsets.only(bottom:10),
           child: CircleAvatar(
             backgroundColor: Colors.white,
-            maxRadius: 30,
+            maxRadius: 25,
             child: IconButton(
               color: Colors.black,
               icon: Icon( state.follow ? Icons.directions_run : Icons.accessibility_new), 

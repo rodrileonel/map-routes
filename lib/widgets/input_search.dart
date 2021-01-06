@@ -42,7 +42,6 @@ class InputSearch extends StatelessWidget {
                 BoxShadow( color: Colors.blueGrey[100], blurRadius: 5, offset: Offset(0,3))
               ]
             ),
-
           ),
         ),
       ),

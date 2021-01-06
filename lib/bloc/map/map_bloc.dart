@@ -15,9 +15,15 @@ class MapBloc extends Bloc<MapEvent, MapState> {
 
   GoogleMapController _googleMapController;
 
-  Polyline _ruta = Polyline(
-    polylineId: PolylineId('ruta'),
+  Polyline _follow = Polyline(
+    polylineId: PolylineId('follow'),
     color: Colors.transparent,
+    width: 3,
+  );
+
+  Polyline _route = Polyline(
+    polylineId: PolylineId('route'),
+    color: Colors.black87,
     width: 3,
   );
 
@@ -46,26 +52,28 @@ class MapBloc extends Bloc<MapEvent, MapState> {
       yield* _onFollow(event);
     if(event is OnMoveMap)
       yield state.copyWith(central: event.center);
+    if(event is OnCreateRoute)
+      yield* _onCreateRoute(event);
   }
 
   Stream<MapState> _onLocationUpdate(OnLocationUpdate event) async*{
     if(state.follow!=null && state.follow)
       moveCamera(event.location);
-    List<LatLng> points = [ ...this._ruta.points, event.location ];
-    this._ruta = this._ruta.copyWith( pointsParam: points); //google maps viene con su copywith
+    List<LatLng> points = [ ...this._follow.points, event.location ];
+    this._follow = this._follow.copyWith( pointsParam: points); //google maps viene con su copywith
     final currentPolylines = state.polylines;
-    currentPolylines['ruta'] = this._ruta;
+    currentPolylines['follow'] = this._follow;
     yield state.copyWith(polylines:currentPolylines);
   }
 
   Stream<MapState> _onShowRoute(OnShowRoute event) async*{
     if(!state.dwawLine)
-      this._ruta = this._ruta.copyWith( colorParam: Colors.black87);
+      this._follow = this._follow.copyWith( colorParam: Colors.black87);
     else
-      this._ruta = this._ruta.copyWith( colorParam: Colors.transparent);
+      this._follow = this._follow.copyWith( colorParam: Colors.transparent);
 
     final currentPolylines = state.polylines;
-    currentPolylines['ruta'] = this._ruta;
+    currentPolylines['follow'] = this._follow;
 
     yield state.copyWith(
       dwawLine: !state.dwawLine,
@@ -76,7 +84,21 @@ class MapBloc extends Bloc<MapEvent, MapState> {
   Stream<MapState> _onFollow(OnFollow event) async*{
     //si la persona qiere moverse esta en false
     if(!state.follow) // mueve la cama aun si la persona dejo de moverse
-      this.moveCamera(this._ruta.points[this._ruta.points.length-1]);
+      this.moveCamera(this._follow.points[this._follow.points.length-1]);
     yield state.copyWith(follow: !state.follow);
+  }
+
+  Stream<MapState> _onCreateRoute(OnCreateRoute event) async*{
+    this._route = this._route.copyWith(
+      pointsParam: event.route
+    );
+
+    final currentPolylines = state.polylines;
+    currentPolylines['route'] = this._route;
+
+    yield state.copyWith(
+      polylines: currentPolylines,
+      //todo añadir marcadores
+    );
   }
 }

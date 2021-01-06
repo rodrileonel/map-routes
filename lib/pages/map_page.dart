@@ -71,21 +71,25 @@ class _MapPageState extends State<MapPage> {
       zoom: 15
     );
 
-    return GoogleMap(
-      initialCameraPosition: cameraPosition,
-      myLocationEnabled: true,
-      myLocationButtonEnabled: false,
-      zoomControlsEnabled: false,
-      onMapCreated: (GoogleMapController controller) 
-        => mapBloc.initMap(controller),
-      polylines: mapBloc.state.polylines.values.toSet(),
-      onCameraMove: (cameraPosition){
-        //el tarj¡get es el punto (latlng) central del mapa
-        mapBloc.add(OnMoveMap(cameraPosition.target));
+    return BlocBuilder<MapBloc, MapState>(
+      builder: (context, _) {
+        return GoogleMap(
+          initialCameraPosition: cameraPosition,
+          myLocationEnabled: true,
+          myLocationButtonEnabled: false,
+          zoomControlsEnabled: false,
+          onMapCreated: (GoogleMapController controller) 
+            => mapBloc.initMap(controller),
+          polylines: mapBloc.state.polylines.values.toSet(),
+          onCameraMove: (cameraPosition){
+            //el tarj¡get es el punto (latlng) central del mapa
+            mapBloc.add(OnMoveMap(cameraPosition.target));
+          },
+          // onCameraIdle: (){
+          //   mapBloc.add(OnMoveMap(cameraPosition.target));
+          // },
+        );
       },
-      // onCameraIdle: (){
-      //   mapBloc.add(OnMoveMap(cameraPosition.target));
-      // },
     );
   }
 }

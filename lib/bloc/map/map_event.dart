@@ -14,6 +14,13 @@ class OnMoveMap extends MapEvent{
   OnMoveMap(this.center);
 }
 
+class OnCreateRoute extends MapEvent{
+  final List<LatLng> route;
+  final double distance;
+  final double duration;
+  OnCreateRoute(this.route, this.distance, this.duration);
+}
+
 class OnLocationUpdate extends MapEvent {
   final LatLng location;
   OnLocationUpdate(this.location);

@@ -62,7 +62,9 @@ class _BuildPin extends StatelessWidget {
                 color: Colors.black,
                 shape: StadiumBorder(),
                 onPressed: (){
-                  //todo confirm destine
+                  showAlert(context, 'Espere..', 'Calculando ruta');
+                  calculateDestine(context);
+                  Navigator.of(context).pop();
                 },
               ),
             )
@@ -71,4 +73,25 @@ class _BuildPin extends StatelessWidget {
       ],
     );
   }
+
+  void calculateDestine(BuildContext context) async {
+    final trafficService = TrafficService();
+    final start = BlocProvider.of<LocationBloc>(context).state.location;
+    final end = BlocProvider.of<MapBloc>(context).state.central;
+
+    final route = await trafficService.getCoords(start, end);
+
+    final geometry = route.routes[0].geometry;
+    final duration = route.routes[0].duration;
+    final distance = route.routes[0].distance;
+
+    // Decodificar los puntos de mapbox (geometry)
+    final points = Pline.Polyline.Decode(encodedString: geometry, precision: 6).decodedCoords;
+    final List<LatLng> puntos = points.map((point) => LatLng(point[0],point[1])).toList();
+
+    BlocProvider.of<MapBloc>(context).add(OnCreateRoute(puntos,duration,distance));
+
+    BlocProvider.of<SearchBloc>(context).add(OnDesactivate());
+    
+  } 
 }

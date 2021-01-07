@@ -28,8 +28,6 @@ class TrafficService{
       'language':'es',
     });
 
-    print(response);
-
     return RouteResponse.fromJson(response.data);
   }
 

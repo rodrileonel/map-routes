@@ -21,7 +21,11 @@ class InputSearch extends StatelessWidget {
     return SafeArea(
       child: GestureDetector(
         onTap: () async {
-          final result = await showSearch(context: context, delegate: SearchDestination());
+          final proximity = BlocProvider.of<LocationBloc>(context).state.location;
+          final result = await showSearch(
+            context: context, 
+            delegate: SearchDestination(proximity)
+          );
           this.searchPlace(context,result);
         },
         child: FadeInDown(

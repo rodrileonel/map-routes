@@ -10,8 +10,9 @@ class SearchDestination extends SearchDelegate<SearchResult>{
   final String searchFieldLabel;
   final TrafficService _trafficService;
   final LatLng proximity;
+  final List<SearchResult> historial;
 
-  SearchDestination(this.proximity)
+  SearchDestination(this.proximity, this.historial)
     : this.searchFieldLabel = 'Buscar...',
       this._trafficService = TrafficService();
 
@@ -49,7 +50,15 @@ class SearchDestination extends SearchDelegate<SearchResult>{
             onTap: (){
               this.close(context, SearchResult(cancel: false, manual: true));
             },
-          )
+          ),
+          ...this.historial.map((e) => ListTile(
+            leading:Icon(Icons.history),
+            title: Text(e.name),
+            subtitle: Text(e.description),
+            onTap: (){
+              this.close(context, e);
+            },
+          )).toList()
         ]
       );
     return this._buildSearchResults();
@@ -60,7 +69,7 @@ class SearchDestination extends SearchDelegate<SearchResult>{
       return Container();
 
     this._trafficService.getSugerenciasPorQuery(this.query.trim(), this.proximity);
-    
+
     return StreamBuilder(
       //future: this._trafficService.gerResults(this.query.trim(), this.proximity),
       stream: this._trafficService.suggestionsStream,
@@ -84,7 +93,14 @@ class SearchDestination extends SearchDelegate<SearchResult>{
               title: Text(places[i].textEs),
               subtitle: Text(places[i].placeNameEs),
               onTap: (){
-                print(places[i].textEs);
+                this.close(context, SearchResult(
+                  cancel: false,
+                  manual: false,
+                  //en mapbox viene primero la longitud y luego la latitud
+                  position: LatLng(places[i].center[1], places[i].center[0]),
+                  name: places[i].textEs,
+                  description: places[i].placeNameEs,
+                ));
               },
             );
           },

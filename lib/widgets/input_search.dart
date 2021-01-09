@@ -22,9 +22,10 @@ class InputSearch extends StatelessWidget {
       child: GestureDetector(
         onTap: () async {
           final proximity = BlocProvider.of<LocationBloc>(context).state.location;
+          final history = BlocProvider.of<SearchBloc>(context).state.history;
           final result = await showSearch(
             context: context, 
-            delegate: SearchDestination(proximity)
+            delegate: SearchDestination(proximity,history)
           );
           this.searchPlace(context,result);
         },
@@ -58,5 +59,14 @@ class InputSearch extends StatelessWidget {
     if(place.manual){
       BlocProvider.of<SearchBloc>(context).add(OnActivate());
     }
+
+    //calcular ruta en base a un valor
+    final start = BlocProvider.of<LocationBloc>(context).state.location;
+    calculateWay(context, start, place.position);
+
+    //agregar al historial
+    final searchBlock = BlocProvider.of<SearchBloc>(context);
+    searchBlock.add(OnAddHistory(place));
+
   }
 }

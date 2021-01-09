@@ -63,7 +63,9 @@ class _BuildPin extends StatelessWidget {
                 shape: StadiumBorder(),
                 onPressed: (){
                   showAlert(context, 'Espere..', 'Calculando ruta');
-                  calculateWay(context);
+                  final start = BlocProvider.of<LocationBloc>(context).state.location;
+                  final end = BlocProvider.of<MapBloc>(context).state.central;
+                  calculateWay(context,start,end);
                   Navigator.of(context).pop();
                 },
               ),
@@ -74,35 +76,5 @@ class _BuildPin extends StatelessWidget {
     );
   }
 
-  void calculateWay(BuildContext context) async {
-    final trafficService = TrafficService();
-    final start = BlocProvider.of<LocationBloc>(context).state.location;
-    final end = BlocProvider.of<MapBloc>(context).state.central;
 
-    final route = await trafficService.getCoords(start, end);
-
-    final geometry = route.routes[0].geometry;
-    final duration = route.routes[0].duration;
-    final distance = route.routes[0].distance;
-
-    // Decodificar los puntos de mapbox (geometry)
-    final points = Pline.Polyline.Decode(encodedString: geometry, precision: 6).decodedCoords;
-    //final List<LatLng> puntos = points.map((point) => LatLng(point[0],point[1])).toList();
-
-    List<LatLng> puntos = List();
-
-    for (var i = 0; i < points.length-1; i++) {
-      final routePoint = await trafficService.getCoords(LatLng(points[i][0],points[i][1]), LatLng(points[i+1][0],points[i+1][1]));
-      final geometryPoint = routePoint.routes[0].geometry;
-      final pointsPoint = Pline.Polyline.Decode(encodedString: geometryPoint, precision: 6).decodedCoords;
-      pointsPoint.forEach((point) {
-        puntos.add(LatLng(point[0],point[1]));
-      });
-    }
-
-    BlocProvider.of<MapBloc>(context).add(OnCreateRoute(puntos,duration,distance));
-
-    BlocProvider.of<SearchBloc>(context).add(OnDesactivate());
-    
-  } 
 }

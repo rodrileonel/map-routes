@@ -43,7 +43,7 @@ class TrafficService{
     return RouteResponse.fromJson(response.data);
   }
 
-  Future<SearchResponse> gerResults(String search,LatLng proximity) async{
+  Future<SearchResponse> getResults(String search,LatLng proximity) async{
     final url = '${this._baseURLGeo}/mapbox.places/$search.json';
 
     try {
@@ -66,7 +66,7 @@ class TrafficService{
 
     debouncer.value = '';
     debouncer.onValue = ( value ) async {
-      final resultados = await this.gerResults(value, proximidad);
+      final resultados = await this.getResults(value, proximidad);
       this._suggestionsStream.add(resultados);
     };
 

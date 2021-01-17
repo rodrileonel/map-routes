@@ -62,11 +62,9 @@ class _BuildPin extends StatelessWidget {
                 color: Colors.black,
                 shape: StadiumBorder(),
                 onPressed: (){
-                  showAlert(context, 'Espere..', 'Calculando ruta');
                   final start = BlocProvider.of<LocationBloc>(context).state.location;
                   final end = BlocProvider.of<MapBloc>(context).state.central;
-                  calculateWay(context,start,end);
-                  Navigator.of(context).pop();
+                  calculateWay(context,start,end,'');
                 },
               ),
             )

@@ -7,14 +7,17 @@ class MapState {
   final bool follow;
   final LatLng central;
   final Map<String,Polyline> polylines;
+  final Map<String,Marker> marker;
 
   MapState( {
     this.readyMap = false,
     this.dwawLine = false,
     this.follow = false,
     this.central,
-    Map<String,Polyline> polylines
-  }): this.polylines = polylines??Map();
+    Map<String,Polyline> polylines,
+    Map<String,Marker> marker,
+  }): this.polylines = polylines??Map(),
+      this.marker = marker??Map();
 
   MapState copyWith({
     bool readyMap,
@@ -22,11 +25,13 @@ class MapState {
     bool follow,
     LatLng central,
     Map<String,Polyline> polylines,
+    Map<String,Marker> marker,
   }) => MapState(
     readyMap: readyMap ?? this.readyMap,
     dwawLine: dwawLine ?? this.dwawLine,
     follow: follow ?? this.follow,
     central: central ?? this.central,
-    polylines: polylines ?? this.polylines
+    polylines: polylines ?? this.polylines,
+    marker: marker ?? this.marker,
   );
 }

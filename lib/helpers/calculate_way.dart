@@ -7,13 +7,18 @@ import 'package:googlemaps/helpers/alert.dart';
 import 'package:googlemaps/services/traffic_service.dart';
 import 'package:polyline/polyline.dart' as Pline;
 
-Future calculateWay(BuildContext context, LatLng start, LatLng end) async {
+Future calculateWay(BuildContext context, LatLng start, LatLng end, String nameDestine) async {
 
     showAlert(context, 'Calculando..', 'Obteniendo ruta');
 
     final trafficService = TrafficService();
 
     final route = await trafficService.getCoords(start, end);
+
+    if(nameDestine==''){
+      final coordsInfo = await trafficService.getCoordsInfo(end);
+      nameDestine = coordsInfo.features[0].text;
+    }
 
     final geometry = route.routes[0].geometry;
     final duration = route.routes[0].duration;
@@ -33,7 +38,7 @@ Future calculateWay(BuildContext context, LatLng start, LatLng end) async {
         puntos.add(LatLng(point[0],point[1]));
       });
     }
-    BlocProvider.of<MapBloc>(context).add(OnCreateRoute(puntos,duration,distance));
+    BlocProvider.of<MapBloc>(context).add(OnCreateRoute(puntos,duration,distance,nameDestine));
     BlocProvider.of<SearchBloc>(context).add(OnDesactivate());
 
     Navigator.pop(context);

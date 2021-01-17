@@ -58,11 +58,12 @@ class InputSearch extends StatelessWidget {
 
     if(place.manual){
       BlocProvider.of<SearchBloc>(context).add(OnActivate());
+      return;
     }
 
     //calcular ruta en base a un valor
     final start = BlocProvider.of<LocationBloc>(context).state.location;
-    calculateWay(context, start, place.position);
+    calculateWay(context, start, place.position, place.name);
 
     //agregar al historial
     final searchBlock = BlocProvider.of<SearchBloc>(context);

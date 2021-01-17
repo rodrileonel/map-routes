@@ -18,7 +18,8 @@ class OnCreateRoute extends MapEvent{
   final List<LatLng> route;
   final double distance;
   final double duration;
-  OnCreateRoute(this.route, this.distance, this.duration);
+  final String namePlace;
+  OnCreateRoute(this.route, this.distance, this.duration, this.namePlace);
 }
 
 class OnLocationUpdate extends MapEvent {

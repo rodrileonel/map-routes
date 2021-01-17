@@ -96,9 +96,34 @@ class MapBloc extends Bloc<MapEvent, MapState> {
     final currentPolylines = state.polylines;
     currentPolylines['route'] = this._route;
 
+    //marcadores
+    final markerStart = Marker(
+      markerId: MarkerId('start'),
+      position: event.route[0],
+      infoWindow: InfoWindow(
+        title: 'Mi Ubicacíon',
+      )
+    );
+    final markerEnd = Marker(
+      markerId: MarkerId('end'),
+      position: event.route.last,
+      infoWindow: InfoWindow(
+        title: event.namePlace,
+        snippet: 'Distancia: ${double.parse(((event.distance/1000)).toStringAsFixed(2))} km, Duracion: ${(event.duration/60).floor()} minutos',
+      )
+    );
+
+    final markers = { ...state.marker };
+    markers['start'] = markerStart;
+    markers['end'] = markerEnd;
+
+    Future.delayed(Duration(milliseconds:400)).then((value) => {
+      _googleMapController.showMarkerInfoWindow(MarkerId('end'))
+    });
+
     yield state.copyWith(
       polylines: currentPolylines,
-      //todo añadir marcadores
+      marker: markers
     );
   }
 }

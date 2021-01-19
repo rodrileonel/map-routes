@@ -2,8 +2,9 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:bloc/bloc.dart';
-import 'package:flutter/material.dart' show Colors;
+import 'package:flutter/material.dart' show Colors, Offset;
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:googlemaps/helpers/widget_to_marker.dart';
 import 'package:googlemaps/themes/map.dart';
 import 'package:meta/meta.dart';
 
@@ -98,28 +99,34 @@ class MapBloc extends Bloc<MapEvent, MapState> {
 
     //marcadores
     final markerStart = Marker(
+      anchor: Offset(0,1),
       markerId: MarkerId('start'),
       position: event.route[0],
-      infoWindow: InfoWindow(
-        title: 'Mi Ubicacíon',
-      )
+      //icon: await getAssetImageMarker(),
+      icon: await getMarkerStartIcon(event.duration.toInt()),
+      // infoWindow: InfoWindow(
+      //   title: 'Mi Ubicacíon',
+      // )
     );
     final markerEnd = Marker(
+      anchor: Offset(0,1),
       markerId: MarkerId('end'),
       position: event.route.last,
-      infoWindow: InfoWindow(
-        title: event.namePlace,
-        snippet: 'Distancia: ${double.parse(((event.distance/1000)).toStringAsFixed(2))} km, Duracion: ${(event.duration/60).floor()} minutos',
-      )
+      //icon: await getNetworkImageMarker(),
+      icon: await getMarkerEndIcon(event.distance.toInt(),event.namePlace),
+      // infoWindow: InfoWindow(
+      //   title: event.namePlace,
+      //   snippet: 'Distancia: ${double.parse(((event.distance/1000)).toStringAsFixed(2))} km, Duracion: ${(event.duration/60).floor()} minutos',
+      // )
     );
 
     final markers = { ...state.marker };
     markers['start'] = markerStart;
     markers['end'] = markerEnd;
 
-    Future.delayed(Duration(milliseconds:400)).then((value) => {
-      _googleMapController.showMarkerInfoWindow(MarkerId('end'))
-    });
+    // Future.delayed(Duration(milliseconds:400)).then((value) => {
+    //   _googleMapController.showMarkerInfoWindow(MarkerId('end'))
+    // });
 
     yield state.copyWith(
       polylines: currentPolylines,
